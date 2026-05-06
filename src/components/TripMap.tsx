@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Map, AdvancedMarker, Pin, useMap } from '@vis.gl/react-google-maps';
+import { Map, AdvancedMarker, useMap } from '@vis.gl/react-google-maps';
 import { db } from '../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { Trip, ScheduleItem } from '../types';
@@ -83,26 +83,25 @@ export function TripMap({ trip }: TripMapProps) {
               position={{ lat: item.lat!, lng: item.lng! }}
               zIndex={5000 + idx}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', userSelect: 'none' }}>
+                {/* Label bubble */}
                 <div style={{
                   backgroundColor: 'white',
                   padding: '2px 4px 2px 6px',
                   borderRadius: '4px',
-                  border: '1.5px solid #000000',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
-                  marginBottom: '2px',
-                  zIndex: 6000,
+                  border: `1.5px solid ${colors.border}`,
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.35)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '3px',
+                  whiteSpace: 'nowrap',
                 }}>
                   <span style={{
                     fontSize: '5pt',
                     fontWeight: '900',
-                    color: '#000000',
-                    whiteSpace: 'nowrap',
+                    color: '#111111',
                     lineHeight: '1',
-                    letterSpacing: '-0.01em'
+                    letterSpacing: '-0.01em',
                   }}>
                     {item.locationName}
                   </span>
@@ -114,33 +113,44 @@ export function TripMap({ trip }: TripMapProps) {
                       }
                     }}
                     style={{
-                      width: '12px',
-                      height: '12px',
+                      width: '11px',
+                      height: '11px',
                       borderRadius: '50%',
                       background: '#ef4444',
                       border: 'none',
                       color: 'white',
-                      fontSize: '8px',
-                      lineHeight: '12px',
-                      textAlign: 'center',
+                      fontSize: '9px',
+                      fontWeight: 'bold',
                       cursor: 'pointer',
                       padding: 0,
                       flexShrink: 0,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      lineHeight: '1',
                     }}
                     title="핀 삭제"
                   >
                     ×
                   </button>
                 </div>
-                <Pin
-                  background={colors.background}
-                  borderColor={colors.border}
-                  glyphColor={colors.glyph}
-                  scale={0.7}
-                />
+                {/* Arrow pointing down */}
+                <div style={{
+                  width: 0,
+                  height: 0,
+                  borderLeft: '4px solid transparent',
+                  borderRight: '4px solid transparent',
+                  borderTop: `5px solid ${colors.border}`,
+                }} />
+                {/* Pin dot */}
+                <div style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: colors.background,
+                  border: `2px solid ${colors.border}`,
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.4)',
+                }} />
               </div>
             </AdvancedMarker>
           );
