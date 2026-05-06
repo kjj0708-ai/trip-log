@@ -1,0 +1,6 @@
+{
+  "name": "Trip-Log",
+  "description": "일정, 장소, 일기, 가계부 등 여행의 모든 것을 기록하는 완벽한 여행 파트너 앱",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["Firebase", "Maps", "Image Generation"]
+}

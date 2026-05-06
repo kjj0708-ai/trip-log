@@ -1,0 +1,100 @@
+{
+  "entities": {
+    "Trip": {
+      "title": "Trip",
+      "description": "Information about a travel trip",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "destination": { "type": "string" },
+        "countryCode": { "type": "string" },
+        "userId": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "title", "startDate", "endDate", "userId"]
+    },
+    "ScheduleItem": {
+      "title": "Schedule Item",
+      "description": "An event or location in a trip schedule",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tripId": { "type": "string" },
+        "day": { "type": "number" },
+        "time": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "locationName": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "category": { "type": "string" },
+        "order": { "type": "number" }
+      }
+    },
+    "JournalEntry": {
+      "title": "Journal Entry",
+      "description": "A diary entry for a trip day",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tripId": { "type": "string" },
+        "day": { "type": "number" },
+        "content": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "number" }
+      }
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "A travel expense record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tripId": { "type": "string" },
+        "day": { "type": "number" },
+        "title": { "type": "string" },
+        "amount": { "type": "number" },
+        "currency": { "type": "string" },
+        "category": { "type": "string" },
+        "date": { "type": "string" }
+      }
+    },
+    "ChecklistItem": {
+      "title": "Checklist Item",
+      "description": "An item in a travel checklist",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tripId": { "type": "string" },
+        "text": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "category": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "trips": {
+      "schema": "Trip",
+      "description": "Collection of trips"
+    },
+    "trips/{tripId}/schedule": {
+      "schema": "ScheduleItem",
+      "description": "Schedule items for a specific trip"
+    },
+    "trips/{tripId}/journal": {
+      "schema": "JournalEntry",
+      "description": "Journal entries for a specific trip"
+    },
+    "trips/{tripId}/expenses": {
+      "schema": "Expense",
+      "description": "Expenses for a specific trip"
+    },
+    "trips/{tripId}/checklist": {
+      "schema": "ChecklistItem",
+      "description": "Checklist items for a specific trip"
+    }
+  }
+}

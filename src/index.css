@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans KR", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Inter", ui-serif, Georgia, serif;
+  
+  --color-natural-bg: #FDFBF7;
+  --color-natural-sidebar: #F7F2EB;
+  --color-natural-border: #E8E2D9;
+  --color-natural-text: #4A443F;
+  --color-natural-heading: #32302E;
+  --color-natural-olive: #5A5A40;
+  --color-natural-terracotta: #D97757;
+  --color-natural-muted: #A69D91;
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.25rem;
+  --radius-4xl: 1.5rem;
+  --radius-5xl: 1.75rem;
+}
+
+@layer base {
+  body {
+    @apply font-sans text-natural-text bg-natural-bg antialiased;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
