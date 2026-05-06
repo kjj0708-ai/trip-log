@@ -309,7 +309,17 @@ export function AppContent() {
                     <p className="text-[8px] text-natural-muted truncate">{user.email}</p>
                   </div>
                   <div className="p-1">
-                    <p className="text-[7px] font-black text-natural-terracotta px-3 py-1 uppercase opacity-50">Google Maps 키</p>
+                    <div className="flex items-center justify-between px-3 py-1">
+                      <p className="text-[7px] font-black text-natural-terracotta uppercase opacity-50">Google Maps 키</p>
+                      <a
+                        href="https://developers.google.com/maps/documentation/javascript/get-api-key"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[7px] text-blue-500 underline font-bold"
+                      >
+                        키 발급받기 →
+                      </a>
+                    </div>
                     <div className="px-3 py-2 space-y-1.5">
                       <input
                         type="text"

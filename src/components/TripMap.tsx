@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Map, AdvancedMarker, Pin, useMap } from '@vis.gl/react-google-maps';
 import { db } from '../lib/firebase';
-import { collection, query, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 import { Trip, ScheduleItem } from '../types';
 
 interface TripMapProps {
@@ -83,20 +83,10 @@ export function TripMap({ trip }: TripMapProps) {
               position={{ lat: item.lat!, lng: item.lng! }}
               zIndex={5000 + idx}
             >
-              <div style={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center',
-                cursor: 'pointer'
-              }}>
-                {/* 
-                  Enhanced Visibility Label
-                  We use a solid background and clear borders.
-                  The label is placed above the pin.
-                */}
-                <div style={{ 
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer' }}>
+                <div style={{
                   backgroundColor: 'white',
-                  padding: '2px 6px',
+                  padding: '2px 4px 2px 6px',
                   borderRadius: '4px',
                   border: '1.5px solid #000000',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
@@ -104,24 +94,50 @@ export function TripMap({ trip }: TripMapProps) {
                   zIndex: 6000,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  pointerEvents: 'none'
+                  gap: '3px',
                 }}>
-                  <span style={{ 
-                    fontSize: '11px',
+                  <span style={{
+                    fontSize: '5pt',
                     fontWeight: '900',
                     color: '#000000',
                     whiteSpace: 'nowrap',
-                    display: 'block',
                     lineHeight: '1',
                     letterSpacing: '-0.01em'
                   }}>
                     {item.locationName}
                   </span>
+                  <button
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      if (confirm(`'${item.title}' 핀을 삭제할까요?`)) {
+                        await deleteDoc(doc(db, `trips/${item.tripId}/schedule`, item.id));
+                      }
+                    }}
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      borderRadius: '50%',
+                      background: '#ef4444',
+                      border: 'none',
+                      color: 'white',
+                      fontSize: '8px',
+                      lineHeight: '12px',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      padding: 0,
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    title="핀 삭제"
+                  >
+                    ×
+                  </button>
                 </div>
-                <Pin 
-                  background={colors.background} 
-                  borderColor={colors.border} 
+                <Pin
+                  background={colors.background}
+                  borderColor={colors.border}
                   glyphColor={colors.glyph}
                   scale={0.7}
                 />
