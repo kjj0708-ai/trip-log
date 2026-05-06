@@ -35,13 +35,13 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
-import { exportAllUserDataJSON, exportAllUserDataExcel } from './services/DataExportService';
+import { exportAllUserDataJSON, exportAllUserDataExcel, importAllUserDataJSON } from './services/DataExportService';
 import { readExcelFile, readWordFile, extractScheduleWithAI } from './services/SmartImportService';
 import { APIProvider, useMapsLibrary } from '@vis.gl/react-google-maps';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { handleFirestoreError, OperationType } from './lib/errorUtils';
 
-const API_KEY = process.env.GOOGLE_MAPS_PLATFORM_KEY || (import.meta as any).env.VITE_GOOGLE_MAPS_PLATFORM_KEY || '';
+const API_KEY = process.env.GOOGLE_MAPS_PLATFORM_KEY || (import.meta as any).env.VITE_GOOGLE_MAPS_PLATFORM_KEY || localStorage.getItem('GOOGLE_MAPS_PLATFORM_KEY') || '';
 
 if (!API_KEY) {
   console.warn('Google Maps API Key is missing. Please set GOOGLE_MAPS_PLATFORM_KEY or VITE_GOOGLE_MAPS_PLATFORM_KEY in your environment variables.');
@@ -71,6 +71,7 @@ export function AppContent() {
   const [processingStatus, setProcessingStatus] = useState<string>('');
   const [tripToDelete, setTripToDelete] = useState<Trip | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [mapsKeyInput, setMapsKeyInput] = useState(localStorage.getItem('GOOGLE_MAPS_PLATFORM_KEY') || '');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -79,6 +80,21 @@ export function AppContent() {
     });
     return unsubscribe;
   }, []);
+
+  // 브라우저 뒤로 가기 → 앱 내 이전 화면으로
+  useEffect(() => {
+    if (activeTrip) {
+      history.pushState({ view: 'detail' }, '');
+    }
+  }, [activeTrip]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (activeTrip) setActiveTrip(null);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [activeTrip]);
 
   useEffect(() => {
     if (!user) {
@@ -293,12 +309,34 @@ export function AppContent() {
                     <p className="text-[8px] text-natural-muted truncate">{user.email}</p>
                   </div>
                   <div className="p-1">
+                    <p className="text-[7px] font-black text-natural-terracotta px-3 py-1 uppercase opacity-50">Google Maps 키</p>
+                    <div className="px-3 py-2 space-y-1.5">
+                      <input
+                        type="text"
+                        placeholder="API 키 입력"
+                        className="w-full px-2 py-1.5 text-[10px] border border-natural-border rounded-lg outline-none focus:ring-1 focus:ring-natural-olive bg-natural-sidebar"
+                        value={mapsKeyInput}
+                        onChange={(e) => setMapsKeyInput(e.target.value)}
+                      />
+                      <button
+                        onClick={() => { localStorage.setItem('GOOGLE_MAPS_PLATFORM_KEY', mapsKeyInput); window.location.reload(); }}
+                        className="w-full py-1.5 bg-natural-olive text-white text-[10px] font-bold rounded-lg hover:bg-[#4A4A35] transition-colors"
+                      >
+                        저장 후 새로고침
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-1 border-t border-natural-border">
                     <p className="text-[7px] font-black text-natural-terracotta px-3 py-1 uppercase opacity-50">데이터 관리</p>
                     <button onClick={() => { exportAllUserDataJSON(user.uid); setShowSettings(false); }} className="w-full px-3 py-2 text-left text-[11px] font-bold text-natural-text hover:bg-natural-sidebar flex items-center gap-2 rounded-lg transition-colors">
-                      <FileJson size={14} className="text-blue-500" /> 전체 JSON 내보내기
+                      <FileJson size={14} className="text-blue-500" /> JSON 내보내기
                     </button>
+                    <label className="w-full px-3 py-2 text-left text-[11px] font-bold text-natural-text hover:bg-natural-sidebar flex items-center gap-2 rounded-lg transition-colors cursor-pointer">
+                      <FileUp size={14} className="text-natural-olive" /> JSON 가져오기
+                      <input type="file" accept=".json" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { importAllUserDataJSON(user.uid, f); setShowSettings(false); } }} />
+                    </label>
                     <button onClick={() => { exportAllUserDataExcel(user.uid); setShowSettings(false); }} className="w-full px-3 py-2 text-left text-[11px] font-bold text-natural-text hover:bg-natural-sidebar flex items-center gap-2 rounded-lg transition-colors">
-                      <FileSpreadsheet size={14} className="text-green-600" /> 전체 엑셀 내보내기
+                      <FileSpreadsheet size={14} className="text-green-600" /> 엑셀 내보내기
                     </button>
                   </div>
                   <div className="p-1 border-t border-natural-border bg-natural-sidebar/10">

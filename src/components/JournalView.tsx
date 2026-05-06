@@ -11,7 +11,7 @@ import {
   setDoc
 } from 'firebase/firestore';
 import { Trip, JournalEntry } from '../types';
-import { Plus, Trash2, Camera, MapPin, Heart, BookOpen, Link as LinkIcon } from 'lucide-react';
+import { Plus, Trash2, Camera, Pencil, MapPin, Heart, BookOpen, Link as LinkIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { format, addDays, parseISO } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -143,11 +143,11 @@ export function JournalView({ trip }: JournalViewProps) {
             </h3>
           </div>
           {!isAdding && (
-            <button 
+            <button
               onClick={() => setIsAdding(true)}
               className="p-2 bg-natural-olive text-white rounded-lg shadow-sm hover:bg-[#4A4A35] transition-all"
             >
-              <Camera size={16} />
+              <Pencil size={16} />
             </button>
           )}
         </div>
